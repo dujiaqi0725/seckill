@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/addProduct.css">
+    <title>商品数据提交</title>
+</head>
+<body>
+<div class="container">
+    <h1>商品数据提交</h1>
+    <form id="productForm" method="post">
+        <!-- 用户名输入字段 -->
+        <div class="form-group">
+            <label for="username" class="required-field">用户名</label>
+            <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+            <div class="form-error" id="usernameError">请输入用户名</div>
+        </div>
+
+        <div class="form-group">
+            <label for="name" class="required-field">商品名称</label>
+            <input type="text" id="name" name="name" placeholder="请输入商品名称" required>
+            <div class="form-error" id="nameError">请输入商品名称</div>
+        </div>
+
+        <div class="form-group">
+            <label for="description" class="required-field">商品描述</label>
+            <textarea id="description" name="description" placeholder="请输入商品详细描述" required></textarea>
+            <div class="form-error" id="descriptionError">请输入商品描述</div>
+        </div>
+
+        <div class="form-group">
+            <label for="imageUrls" class="required-field">商品图片地址</label>
+            <div id="imageUrlContainer">
+                <div class="image-url-input">
+                    <input type="text" id="imageUrls" name="imageUrls" placeholder="请输入图片地址" required>
+                    <button type="button" class="remove-url" style="display: none;">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="button" id="addUrlBtn">
+                <i class="fa fa-plus"></i> 添加图片地址
+            </button>
+            <div class="form-error" id="imageUrlsError">请至少输入一个图片地址</div>
+        </div>
+
+        <div class="form-group">
+            <label for="price" class="required-field">商品价格</label>
+            <input type="number" id="price" name="price" step="0.01" placeholder="请输入商品价格" required>
+            <div class="form-error" id="priceError">请输入商品价格</div>
+        </div>
+
+        <div class="form-group">
+            <label for="stock" class="required-field">商品库存</label>
+            <input type="number" id="stock" name="stock" min="0" placeholder="请输入商品库存" required>
+            <div class="form-error" id="stockError">请输入商品库存</div>
+        </div>
+
+        <div class="form-actions">
+            <button type="reset" class="btn btn-secondary">重置</button>
+            <button type="submit" class="btn btn-primary">提交商品</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const productForm = document.getElementById('productForm');
+        const imageUrlContainer = document.getElementById('imageUrlContainer');
+        const addUrlBtn = document.getElementById('addUrlBtn');
+
+        // 添加图片地址输入框
+        addUrlBtn.addEventListener('click', function() {
+            const newInput = document.createElement('div');
+            newInput.className = 'image-url-input';
+            newInput.innerHTML = `
+                <input type="text" name="imageUrls" placeholder="请输入图片地址" required>
+                <button type="button" class="remove-url">
+                    <i class="fa fa-times"></i>
+                </button>
+            `;
+            imageUrlContainer.appendChild(newInput);
+
+            // 添加移除事件
+            const removeBtn = newInput.querySelector('.remove-url');
+            removeBtn.addEventListener('click', function() {
+                newInput.remove();
+                validateImageUrls();
+            });
+
+            validateImageUrls();
+        });
+
+        // 验证图片URLs数量（不验证格式）
+        function validateImageUrls() {
+            const urlInputs = document.querySelectorAll('input[name="imageUrls"]');
+            const errorElement = document.getElementById('imageUrlsError');
+
+            if (urlInputs.length === 0 || Array.from(urlInputs).every(input => !input.value.trim())) {
+                errorElement.style.display = 'block';
+                return false;
+            } else {
+                errorElement.style.display = 'none';
+                return true;
+            }
+        }
+
+        // 表单提交验证
+        productForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let isValid = true;
+
+            // 验证用户名
+            const username = document.getElementById('username').value;
+            const usernameError = document.getElementById('usernameError');
+            if (!username) {
+                usernameError.style.display = 'block';
+                isValid = false;
+            } else {
+                usernameError.style.display = 'none';
+            }
+
+            // 验证商品名称
+            const name = document.getElementById('name').value;
+            const nameError = document.getElementById('nameError');
+            if (!name) {
+                nameError.style.display = 'block';
+                isValid = false;
+            } else {
+                nameError.style.display = 'none';
+            }
+
+            // 验证商品描述
+            const description = document.getElementById('description').value;
+            const descriptionError = document.getElementById('descriptionError');
+            if (!description) {
+                descriptionError.style.display = 'block';
+                isValid = false;
+            } else {
+                descriptionError.style.display = 'none';
+            }
+
+            // 验证图片URLs（仅验证是否为空）
+            if (!validateImageUrls()) {
+                isValid = false;
+            }
+
+            // 验证商品价格
+            const price = document.getElementById('price').value;
+            const priceError = document.getElementById('priceError');
+            if (!price) {
+                priceError.style.display = 'block';
+                isValid = false;
+            } else {
+                priceError.style.display = 'none';
+            }
+
+            // 验证商品库存
+            const stock = document.getElementById('stock').value;
+            const stockError = document.getElementById('stockError');
+            if (!stock) {
+                stockError.style.display = 'block';
+                isValid = false;
+            } else {
+                stockError.style.display = 'none';
+            }
+
+            // 如果验证通过，提交表单
+            if (isValid) {
+                const formData = new FormData(productForm);
+
+                fetch('/seckill/addProduct', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = '/seckill/product';
+                        } else {
+                            throw new Error('提交失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('提交失败，请重试');
+                    });
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dujiaqi0725.seckill.dao.UserDAO">
+    <resultMap id="UserResultMap" type="com.dujiaqi0725.seckill.dataobject.UserDO">
+        <id column="id" property="id"/>
+        <result column="gmt_created" property="gmtCreated"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="user_name" property="username"/>
+        <result column="password" property="password"/>
+        <result column="avatar" property="avatar"/>
+        <result column="product_names" property="productNames"/>
+    </resultMap>
+
+    <insert id="add" parameterType="com.dujiaqi0725.seckill.dataobject.UserDO" useGeneratedKeys="true" keyProperty="id" >
+        insert into user (gmt_created , gmt_modified , user_name , password , avatar , product_names)
+        values (now() , now() , #{username} , #{password} , #{avatar} , #{productNames})
+    </insert>
+
+    <select id="selectById" resultMap="UserResultMap">
+        select * from user
+        <where>
+            <if test="id != null and id != '' ">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByUsername" resultMap="UserResultMap">
+        select  * from user
+        <where>
+            <if test="username != null and username != '' ">
+                user_name = #{username}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByIds" resultMap="UserResultMap">
+        select * from user
+        <where>
+            id in
+                <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+        </where>
+    </select>
+
+    <update id="update">
+        update user
+        <set>
+            <if test="gmtCreated != null">
+                gmt_created = #{gmtCreated},
+            </if>
+            gmt_modified = now(),
+            <if test="username != null and username != '' ">
+                user_name = #{username},
+            </if>
+            <if test="password != null and password != '' ">
+                password = #{password},
+            </if>
+            <if test="avatar != null and avatar != '' ">
+                avatar = #{avatar},
+            </if>
+            <if test="productNames != null and productNames != '' ">
+                product_names = #{productNames}
+            </if>
+        </set>
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </where>
+    </update>
+</mapper>

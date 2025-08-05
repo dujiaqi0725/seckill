@@ -1,0 +1,19 @@
+.product{
+    border: black 2px solid;
+}
+.addProduct {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background-color: #165DFF;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(22, 93, 255, 0.3);
+    transition: all 0.3s ease;
+    outline: none;
+    z-index: 100;
+}

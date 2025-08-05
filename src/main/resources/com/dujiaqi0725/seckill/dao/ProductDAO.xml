@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dujiaqi0725.seckill.dao.ProductDAO">
+    <resultMap id="productResultMap" type="com.dujiaqi0725.seckill.dataobject.ProductDO">
+        <id column="id" property="id"/>
+        <result column="gmt_created" property="gmtCreated"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="images" property="images"/>
+        <result column="status" property="status"/>
+        <result column="price" property="price"/>
+        <result column="stock" property="stock"/>
+    </resultMap>
+
+    <insert id="add" parameterType="com.dujiaqi0725.seckill.dataobject.ProductDO" keyProperty="id" useGeneratedKeys="true">
+        insert into product (gmt_created , gmt_modified , user_id , name , description , images , status , price , stock)
+        values (now() , now() , #{userId} , #{name} , #{description} , #{images} , #{status} , #{price} , #{stock})
+    </insert>
+
+    <delete id="delete">
+        delete from product
+        <where>
+            <if test="id != null and id != '' ">
+                id = #{id}
+            </if>
+        </where>
+    </delete>
+    
+    <update id="update" parameterType="com.dujiaqi0725.seckill.dataobject.ProductDO">
+        update product
+        <set>
+            <if test="gmtCreated != null">
+                gmt_created = #{gmtCreated},
+            </if>
+            gmt_modified = now(),
+            <if test="userId!= null and userId != '' ">
+                user_id = #{userId},
+            </if>
+            <if test="name != null and name != '' ">
+                name = #{name},
+            </if>
+            <if test="description != null and description != '' ">
+                description = #{description},
+            </if>
+            <if test="images != null and images != '' ">
+                images = #{images},
+            </if>
+            <if test="status != null and status != '' ">
+                status = #{status},
+            </if>
+            <if test="price != null and price != '' ">
+                price = #{price},
+            </if>
+            <if test="stock != null and stock != '' ">
+                stock =#{stock}
+            </if>
+        </set>
+        <where>
+            <if test="id != null and id != ''">
+                id =#{id}
+            </if>
+        </where>
+    </update>
+
+    <select id="selectById" resultMap="productResultMap">
+        select * from product
+        <where>
+            <if test="id != null and id != ''">
+                id =#{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByName" resultMap="productResultMap">
+        select * from product
+        <where>
+            <if test="name != null and name!= '' ">
+                name =#{name}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAllByName" resultMap="productResultMap">
+        select * from product
+        <where>
+            <if test="name != null and name!= '' ">
+                name like concat('%' , #{name} , '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="pageQuery" resultMap="productResultMap">
+        select * from product
+        <bind name="currentIndex" value="(pagination - 1) * pageSize"/>
+        limit #{currentIndex} , #{pageSize}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(*) from product
+    </select>
+
+    <select id="selectAll" resultMap="productResultMap">
+        select * from product
+    </select>
+
+</mapper>

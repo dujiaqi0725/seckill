@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>product</title>
+    <link rel="stylesheet" href="/css/product.css">
+</head>
+<body>
+<input class="addProduct" id="add" type="button" value="添加商品">
+<div th:each="product : ${products}" class="product">
+    <div th:text="${product.getName()}">商品名称</div>
+    <div th:text="${product.getDescription()}">商品详情</div>
+    <div th:text="${product.getStatus()}">商品状态</div>
+    <div th:text="${product.getPrice()}">商品价格</div>
+    <div><span>库存：</span><span th:text="${product.getStock()}"></span></div>
+</div>
+
+<script>
+    // 按钮点击事件（示例）
+    document.getElementById("add").addEventListener("click",function (){
+        window.location.href = '/addProduct';
+    });
+</script>
+</body>
+</html>
